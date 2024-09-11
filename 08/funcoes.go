@@ -88,6 +88,17 @@ func reverseString(texto string) string {
 // chamada maxNumber que receba um slice de inteiros e retorne o maior
 // número presente no slice.
 
+// Funções variádias são úteis quando não sabemos
+// quantos itens teremos nos parâmetros
+// das nossas funções
+func variadica(numeros ...int) int {
+	total := 0
+	for _, numero := range numeros {
+		total += numero
+	}
+	return total
+}
+
 func main() {
 
 	fmt.Println("Funções")
