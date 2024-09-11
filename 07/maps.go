@@ -21,4 +21,7 @@ func main() {
 	for nome, salario := range salarios {
 		fmt.Printf("O salário de %s é %.2f.\n", nome, salario)
 	}
+
+	//array2 := [3]int{1,2,3}
+
 }
