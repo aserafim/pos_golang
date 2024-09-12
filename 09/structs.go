@@ -42,11 +42,19 @@ func alteraPreco(p *Produto, novoValor float32) {
 	p.preco = novoValor
 }
 
-type Aluno struct{
-	nome string
+type Aluno struct {
+	nome  string
 	notas []float64
 }
 
+func (aluno Aluno) calculaMedia() float64 {
+	var media float64
+	for _, nota := range aluno.notas {
+		media += nota
+	}
+
+	return media / float64(len(aluno.notas))
+}
 
 func main() {
 
@@ -89,10 +97,14 @@ func main() {
 
 	fmt.Println("Produto: ", produtoUm.nome, " valor: R$", produtoUm.preco)
 
-	alunoUm = Aluno{
-		nome: "Alefe",
-		notas: [0]
+	//notasUm := []float64
 
+	alunoUm := Aluno{
+		nome:  "Alefe",
+		notas: []float64{10.0, 5.7, 6.9},
 	}
+	alunoUm.notas = append(alunoUm.notas, 9.75)
+
+	fmt.Printf("A média do aluno é: %.2f.\n", alunoUm.calculaMedia())
 
 }
