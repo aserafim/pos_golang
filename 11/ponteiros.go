@@ -6,8 +6,22 @@ func addDez(a *int) {
 	*a += 10
 }
 
-func main() {
+type Conta struct {
+	saldo int
+}
 
+func (c Conta) simularEmprestimo(valor int) {
+	c.saldo += valor
+	fmt.Printf("Após a simulação o saldo será de %d.\n", c.saldo)
+}
+
+func (c *Conta) realizaEmprestimo(valor int) int {
+	*&c.saldo += valor
+	fmt.Printf("Emprestimo no valor de %d realizado com sucesso.\n", valor)
+	return c.saldo
+}
+
+func main() {
 	fmt.Println("Ponteiros")
 
 	// Memória -> endereço -> Valor
@@ -35,4 +49,16 @@ func main() {
 
 	addDez(&a)
 	println(a)
+
+	contaUm := Conta{
+		saldo: 1000,
+	}
+
+	fmt.Println(contaUm.saldo)
+
+	contaUm.simularEmprestimo(1200)
+	fmt.Printf("O saldo real atual da contá é de %d.\n", contaUm.saldo)
+
+	contaUm.realizaEmprestimo(3000)
+	fmt.Printf("Saldo atual da conta: %d.\n", contaUm.saldo)
 }
