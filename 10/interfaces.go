@@ -2,6 +2,8 @@ package main
 
 import "fmt"
 
+// Note que uma interface aceita
+// apenas MÉTODOS em sua assinatura
 type Pessoa interface {
 	Desativar()
 }
