@@ -22,6 +22,20 @@ func SomaValores[T int | float64](m map[string]T) T {
 	return soma
 }
 
+// Podemos ainda trabalhar com
+// constraints
+type Number interface {
+	int | float32 | float64
+}
+
+func SomaValoresConstraints[T Number](m map[string]T) T {
+	var soma T
+	for _, v := range m {
+		soma += v
+	}
+	return soma
+}
+
 func main() {
 
 	m := map[string]int{"Alefe": 500, "Natalia": 1000, "Antonieta": 4000}
@@ -29,5 +43,8 @@ func main() {
 
 	m2 := map[string]float64{"Alefe": 500.9, "Natalia": 1000.8, "Antonieta": 4000.7}
 	fmt.Printf("O valor final é %.2f\n", SomaValores(m2))
+
+	m3 := map[string]float32{"Alefe": 500.9, "Natalia": 1000.8, "Antonieta": 4000.7}
+	fmt.Printf("O valor final é %.2f\n", SomaValoresConstraints(m3))
 
 }
