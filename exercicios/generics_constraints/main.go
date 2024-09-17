@@ -90,9 +90,20 @@ func RetornaMaior[T Number](num1 T, num2 T) T {
 	return num2
 }
 
+// Exercício 4
+func Soma[T Number](valores []T) T {
+	var soma T
+	for _, num := range valores {
+		soma += num
+	}
+
+	return soma
+}
+
 func main() {
 	fmt.Println("Exercícios")
 
+	//Testes Exercício 1
 	array := []int{50, 40, 30, 20, 10}
 	arrayDois := []int{5.0, 4.0, 3.0, 2.0, 1.0}
 	_, maior := quickSort(array, 0, len(array)-1)
@@ -101,5 +112,11 @@ func main() {
 	_, maiorDois := quickSort(arrayDois, 0, len(arrayDois)-1)
 	fmt.Println(maiorDois)
 
+	//Testes Exercício 3
 	fmt.Println(RetornaMaior(1.0, 8))
+
+	//Testes Exercício 4
+	fmt.Println(Soma(array))
+	fmt.Println(Soma(arrayDois))
+
 }
