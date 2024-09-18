@@ -1,3 +1,9 @@
+/*
+1. Criando um pacote simples:
+  - Crie um pacote chamado `matematica` com funções para somar, subtrair, multiplicar e dividir dois números.
+  - No pacote principal, importe e utilize essas funções.
+*/
+
 package matematica
 
 type Number interface {

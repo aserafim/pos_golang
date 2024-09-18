@@ -26,14 +26,16 @@ Exercícios de Pacotes em GoLang:
 package main
 
 import (
+	"ex1/geometria"
 	"ex1/matematica"
+	"ex1/trigonometria"
 	"fmt"
 )
 
 func main() {
 	fmt.Println("Exercícios Pacotes")
 
-	//Testando Ex 1
+	// Testando Ex 1
 	fmt.Println(matematica.Soma(1, 2))
 
 	fmt.Println(matematica.Divisao(4, 2))
@@ -41,4 +43,9 @@ func main() {
 	fmt.Println(matematica.Multiplicacao(2, 8))
 
 	fmt.Println(matematica.Subtracao(4, 9))
+
+	// Testando Ex 2
+	fmt.Println(geometria.Area(2, 8))
+	fmt.Println(trigonometria.Seno(3, 5))
+
 }
