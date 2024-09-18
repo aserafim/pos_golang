@@ -25,4 +25,12 @@ func main() {
 	for k, v := range nomes {
 		fmt.Println(k+1, v)
 	}
+
+	// loop infinito
+	// uteis quando vamos esperar
+	// retornos de requisições
+
+	for {
+		fmt.Println("Ao infinito e além...")
+	}
 }
