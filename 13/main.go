@@ -10,4 +10,8 @@ func main() {
 	fmt.Println("Pacotes")
 
 	fmt.Println(soma)
+
+	//fmt.Println(math.a) Não compila, pois "variaveis minúsculas" só são vistas dentro do pacote
+
+	fmt.Println(math.A) //Variáveis maiúsculas podem ser usadas fora do pacote
 }
