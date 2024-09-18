@@ -106,6 +106,7 @@ func main() {
 	//Testes Exercício 1
 	array := []int{50, 40, 30, 20, 10}
 	arrayDois := []int{5.0, 4.0, 3.0, 2.0, 1.0}
+
 	_, maior := quickSort(array, 0, len(array)-1)
 	fmt.Println(maior)
 
