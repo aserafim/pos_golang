@@ -1,7 +1,25 @@
-package aula
+package main
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+	"net/http"
+)
 
 func main() {
 	fmt.Println("Aula sobre chamadas HTTP")
+
+	req, err := http.Get("https://www.google.com.br")
+	if err != nil {
+		panic(err)
+	}
+
+	res, err := io.ReadAll(req.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(string(res))
+	req.Body.Close()
+
 }
