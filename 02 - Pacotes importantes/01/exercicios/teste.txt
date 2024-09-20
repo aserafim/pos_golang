@@ -1,0 +1,2 @@
+Um arquivo de teste para manipular via Golang
+Escrevendo no arquivo já existente.
