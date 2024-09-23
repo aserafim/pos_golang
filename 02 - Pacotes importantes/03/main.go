@@ -7,7 +7,7 @@ import (
 )
 
 type Conta struct {
-	Numero int `json:"n"`
+	Numero int `json:"-"`
 	Saldo  int `json:"s" validate:"gt=0"`
 }
 
