@@ -7,8 +7,8 @@ import (
 )
 
 type Conta struct {
-	Numero int
-	Saldo  int
+	Numero int `json:"n"`
+	Saldo  int `json:"s" validate:"gt=0"`
 }
 
 func main() {
@@ -48,5 +48,14 @@ func main() {
 
 	println(contaX.Numero)
 	println(contaX.Saldo)
+
+	jsonPuro2 := []byte(`{"n":3, "s":0}`)
+	var contaY Conta
+	err = json.Unmarshal(jsonPuro, &contaY)
+	if err != nil {
+		panic(err)
+	}
+
+	println(string(jsonPuro2))
 
 }
