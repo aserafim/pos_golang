@@ -1,0 +1,53 @@
+Aqui estão algumas perguntas e exercícios práticos para aplicar os conceitos dessa aula:
+
+### Perguntas:
+1. **Qual a função da estrutura `ViaCEP` no código?**
+Ela mapeia o json de retorno da API viaCep, sendo possível a partir dele manipular os dados
+de retorno.
+
+
+2. **Como o método `http.HandleFunc` é utilizado para associar uma rota a um handler?**
+Ele recebe a rota, como parâmetro e a função que será executada quando alguma requisição
+for feita aquela rota.
+
+
+3. **Por que usamos `defer resp.Body.Close()` após a chamada do método `http.Get`?**
+O defer nos garante que a sessão será fechada após ser processada a requisição, pois
+uma sessão aberta pode ocasionar vazamento de recursos.
+
+
+4. **Qual é a diferença entre usar `json.Marshal` e `json.NewEncoder` no contexto de envio de JSON para uma resposta HTTP?**
+
+
+5. **Como funciona a função `BuscaCep`? Quais são os possíveis erros que ela pode retornar?**
+
+
+6. **Por que é importante configurar corretamente os cabeçalhos HTTP, como o `Content-Type`, ao retornar JSON?**
+
+
+7. **Como você trataria erros diferentes na função `BuscaCepHandler`, por exemplo, quando o CEP não é encontrado ou quando a API do ViaCEP está offline?**
+
+
+
+
+
+### Exercícios:
+1. **Adicionar tratamento de erros detalhado:**
+   - Modifique a função `BuscaCepHandler` para retornar mensagens de erro diferentes dependendo do tipo de falha (CEP inválido, falha na conexão com o serviço ViaCEP, etc.).
+
+2. **Inserir validação de CEP:**
+   - Antes de realizar a chamada para o serviço ViaCEP, verifique se o CEP passado é válido (deve ter 8 caracteres e conter apenas números). Retorne uma resposta de erro adequada se for inválido.
+
+3. **Log de Erros:**
+   - Implemente um sistema simples de logging para gravar em um arquivo de texto os erros ocorridos durante a busca de CEP.
+
+4. **Desenvolver uma função de cache de resultados:**
+   - Armazene em memória os resultados de buscas de CEPs feitas anteriormente para evitar múltiplas chamadas para o serviço ViaCEP. Utilize um `map` para isso.
+
+5. **Adicionar uma segunda rota `/status`:**
+   - Crie uma nova rota que retorna uma mensagem simples de status do servidor (por exemplo, "Servidor rodando corretamente").
+
+6. **Testes:**
+   - Implemente testes unitários para a função `BuscaCep` utilizando um mock do serviço `http.Get`.
+
+Esses exercícios vão reforçar sua compreensão sobre manipulação de APIs, JSON, e tratamento de erros em Golang.

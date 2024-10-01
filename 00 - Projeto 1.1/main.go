@@ -1,9 +1,14 @@
+//Exercício 1: Validação de CEP
+//Implemente uma validação para verificar se o CEP contém exatamente 8 dígitos.
+//Caso contrário, retorne um erro de requisição inválida (400 Bad Request).
+
 package main
 
 import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"unicode"
 )
 
 type ViaCEP struct {
@@ -22,8 +27,18 @@ type ViaCEP struct {
 	Siafi       string `json:"siafi"`
 }
 
+func isNumeric(cep string) bool {
+	for _, ch := range cep {
+		if !unicode.IsDigit(ch) {
+			return false
+		}
+	}
+	return true
+}
+
 func main() {
 	http.HandleFunc("/", BuscaCepHandler)
+	http.
 	http.ListenAndServe(":8080", nil)
 }
 
@@ -36,6 +51,14 @@ func BuscaCepHandler(w http.ResponseWriter, r *http.Request) {
 	cepParam := r.URL.Query().Get("cep")
 	if cepParam == "" {
 		w.WriteHeader(http.StatusBadRequest)
+		return
+	} else if len(cepParam) != 8 {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("CEP must have 8 digits"))
+		return
+	} else if isNumeric(cepParam) != true {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("CEP must be numeric"))
 		return
 	}
 	cep, error := BuscaCep(cepParam)
