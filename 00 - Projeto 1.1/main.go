@@ -6,6 +6,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"unicode"
@@ -36,10 +37,8 @@ func isNumeric(cep string) bool {
 	return true
 }
 
-func main() {
-	http.HandleFunc("/", BuscaCepHandler)
-	http.
-	http.ListenAndServe(":8080", nil)
+func VerificaStatus(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "Servidor executando normalmente.")
 }
 
 func BuscaCepHandler(w http.ResponseWriter, r *http.Request) {
@@ -96,4 +95,10 @@ func BuscaCep(cep string) (*ViaCEP, error) {
 		return nil, error
 	}
 	return &c, nil
+}
+
+func main() {
+	http.HandleFunc("/", BuscaCepHandler)
+	http.HandleFunc("/status", VerificaStatus)
+	http.ListenAndServe(":8080", nil)
 }
