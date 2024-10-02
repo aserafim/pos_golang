@@ -32,6 +32,7 @@ type ViaCEP struct {
 
 var cache = make(map[string]ViaCEP)
 var errors = make(map[string]string)
+var erros = make([]string,5)
 
 func isNumeric(cep string) bool {
 	for _, ch := range cep {
@@ -70,6 +71,8 @@ func BuscaCepHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte("Not Found!\n"))
 		t := time.Now()
+		error_entry := t.Format("2006-01-02 15:04:05") + "-" +  "Not Found"
+		erros = append(erros, error_entry)
 		errors[t.Format("2006-01-02 15:04:05")] = "Not Found"
 		return
 	}
