@@ -31,6 +31,7 @@ type ViaCEP struct {
 }
 
 var cache = make(map[string]ViaCEP)
+var errors = make(map[string]string)
 
 func isNumeric(cep string) bool {
 	for _, ch := range cep {
@@ -52,7 +53,7 @@ func CreateLogFile() {
 }
 
 func WriteToLogFile() {
-	
+
 }
 
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
@@ -60,24 +61,36 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func BuscaCepHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		CreateLogFile()
+	if r.URL.Path != "/" && r.URL.Path != "/status" {
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte("Not Found!\n"))
+		t := time.Now()
+		errors[t.Format("2006-01-02 15:04:05")] = "Not Found"
 		return
 	}
 	cepParam := r.URL.Query().Get("cep")
 	if cepParam == "" {
 		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("CEP cannot be an empty value"))
+		t := time.Now()
+		errors[t.Format("2006-01-02 15:04:05")] = "CEP cannot be an empty value"
 		return
 	} else if len(cepParam) != 8 {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("CEP must have 8 digits"))
+		t := time.Now()
+		errors[t.Format("2006-01-02 15:04:05")] = "CEP must have 8 digits"
 		return
 	} else if isNumeric(cepParam) != true {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("CEP must be numeric"))
+		t := time.Now()
+		errors[t.Format("2006-01-02 15:04:05")] = "CEP must be numeric"
 		return
+	}
+
+	for key, value := range errors {
+		fmt.Println(key, "-", value)
 	}
 
 	found := cache[cepParam]
