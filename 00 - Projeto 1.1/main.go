@@ -28,6 +28,8 @@ type ViaCEP struct {
 	Siafi       string `json:"siafi"`
 }
 
+var cache = make(map[string]ViaCEP)
+
 func isNumeric(cep string) bool {
 	for _, ch := range cep {
 		if !unicode.IsDigit(ch) {
@@ -37,7 +39,7 @@ func isNumeric(cep string) bool {
 	return true
 }
 
-func VerificaStatus(w http.ResponseWriter, r *http.Request) {
+func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Servidor executando normalmente.")
 }
 
@@ -60,23 +62,34 @@ func BuscaCepHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("CEP must be numeric"))
 		return
 	}
-	cep, error := BuscaCep(cepParam)
-	if error != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+
+	found := cache[cepParam]
+	if (ViaCEP{}) != found {
+		json.NewEncoder(w).Encode(found)
+	} else {
+
+		cep, error := BuscaCep(cepParam)
+		if error != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
+		//for key, value := range cache {
+		//	fmt.Println(key, " - ", value)
+		//}
+
+		// Forma extensa
+		// result, err := json.Marshal(cep)
+		// if err != nil{
+		// 	w.WriteHeader(http.StatusInternalServerError)
+		// 	return
+		// }
+		// w.Write(result)
+
+		// Forma mais prática
+		json.NewEncoder(w).Encode(cep)
 	}
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-
-	// Forma extensa
-	// result, err := json.Marshal(cep)
-	// if err != nil{
-	// 	w.WriteHeader(http.StatusInternalServerError)
-	// 	return
-	// }
-	// w.Write(result)
-
-	// Forma mais prática
-	json.NewEncoder(w).Encode(cep)
 }
 
 func BuscaCep(cep string) (*ViaCEP, error) {
@@ -94,11 +107,15 @@ func BuscaCep(cep string) (*ViaCEP, error) {
 	if error != nil {
 		return nil, error
 	}
+
+	cache[cep] = c
+
 	return &c, nil
 }
 
 func main() {
 	http.HandleFunc("/", BuscaCepHandler)
-	http.HandleFunc("/status", VerificaStatus)
+	http.HandleFunc("/status", StatusHandler)
 	http.ListenAndServe(":8080", nil)
+
 }
