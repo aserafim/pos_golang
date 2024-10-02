@@ -42,22 +42,27 @@ func isNumeric(cep string) bool {
 	return true
 }
 
+func StatusHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "Servidor executando normalmente.")
+}
+
 func CreateLogFile() {
 	t := time.Now()
 	file_name := t.Format("2006-01-02 15:04:05") + ".txt"
 
-	_, err := os.Create(file_name)
+	log_file, err := os.Create(file_name)
 	if err != nil {
 		panic(err)
 	}
-}
 
-func WriteToLogFile() {
+	for key, value := range errors {
 
-}
+		_, err := log_file.Write([]byte(key + " - " + value + "\n"))
 
-func StatusHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Servidor executando normalmente.")
+		if err != nil {
+			panic(err)
+		}
+	}
 }
 
 func BuscaCepHandler(w http.ResponseWriter, r *http.Request) {
@@ -89,10 +94,6 @@ func BuscaCepHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for key, value := range errors {
-		fmt.Println(key, "-", value)
-	}
-
 	found := cache[cepParam]
 	if (ViaCEP{}) != found {
 		json.NewEncoder(w).Encode(found)
@@ -119,7 +120,12 @@ func BuscaCepHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Forma mais prática
 		json.NewEncoder(w).Encode(cep)
+		t := time.Now()
+		errors[t.Format("2006-01-02 15:04:05")] = "Success!"
 	}
+
+	CreateLogFile()
+
 }
 
 func BuscaCep(cep string) (*ViaCEP, error) {
