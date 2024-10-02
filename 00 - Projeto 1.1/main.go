@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
+	"time"
 	"unicode"
 )
 
@@ -39,12 +41,27 @@ func isNumeric(cep string) bool {
 	return true
 }
 
+func CreateLogFile() {
+	t := time.Now()
+	file_name := t.Format("2006-01-02 15:04:05") + ".txt"
+
+	_, err := os.Create(file_name)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func WriteToLogFile() {
+	
+}
+
 func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "Servidor executando normalmente.")
 }
 
 func BuscaCepHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
+		CreateLogFile()
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte("Not Found!\n"))
 		return
