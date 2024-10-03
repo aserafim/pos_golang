@@ -31,8 +31,7 @@ type ViaCEP struct {
 }
 
 var cache = make(map[string]ViaCEP)
-var errors = make(map[string]string)
-var erros = make([]string,5)
+var errors = make([]string, 5)
 
 func isNumeric(cep string) bool {
 	for _, ch := range cep {
@@ -56,14 +55,13 @@ func CreateLogFile() {
 		panic(err)
 	}
 
-	for key, value := range errors {
-
-		_, err := log_file.Write([]byte(key + " - " + value + "\n"))
-
+	for i := len(errors) - 1; i >= 0; i-- {
+		_, err := log_file.Write([]byte(errors[i] + "\n"))
 		if err != nil {
 			panic(err)
 		}
 	}
+
 }
 
 func BuscaCepHandler(w http.ResponseWriter, r *http.Request) {
@@ -71,9 +69,8 @@ func BuscaCepHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte("Not Found!\n"))
 		t := time.Now()
-		error_entry := t.Format("2006-01-02 15:04:05") + "-" +  "Not Found"
-		erros = append(erros, error_entry)
-		errors[t.Format("2006-01-02 15:04:05")] = "Not Found"
+		error_entry := t.Format("2006-01-02 15:04:05") + "-" + "Not Found"
+		errors = append(errors, error_entry)
 		return
 	}
 	cepParam := r.URL.Query().Get("cep")
@@ -81,19 +78,22 @@ func BuscaCepHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("CEP cannot be an empty value"))
 		t := time.Now()
-		errors[t.Format("2006-01-02 15:04:05")] = "CEP cannot be an empty value"
+		error_entry := t.Format("2006-01-02 15:04:05") + "-" + "CEP cannot be an empty value"
+		errors = append(errors, error_entry)
 		return
 	} else if len(cepParam) != 8 {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("CEP must have 8 digits"))
 		t := time.Now()
-		errors[t.Format("2006-01-02 15:04:05")] = "CEP must have 8 digits"
+		error_entry := t.Format("2006-01-02 15:04:05") + "-" + "CEP must have 8 digits"
+		errors = append(errors, error_entry)
 		return
 	} else if isNumeric(cepParam) != true {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("CEP must be numeric"))
 		t := time.Now()
-		errors[t.Format("2006-01-02 15:04:05")] = "CEP must be numeric"
+		error_entry := t.Format("2006-01-02 15:04:05") + "-" + "CEP must be numeric"
+		errors = append(errors, error_entry)
 		return
 	}
 
@@ -124,7 +124,8 @@ func BuscaCepHandler(w http.ResponseWriter, r *http.Request) {
 		// Forma mais prática
 		json.NewEncoder(w).Encode(cep)
 		t := time.Now()
-		errors[t.Format("2006-01-02 15:04:05")] = "Success!"
+		error_entry := t.Format("2006-01-02 15:04:05") + "-" + "Success!"
+		errors = append(errors, error_entry)
 	}
 
 	CreateLogFile()

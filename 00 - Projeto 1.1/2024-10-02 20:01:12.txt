@@ -1,6 +1,0 @@
-2024-10-02 20:01:02 - CEP cannot be an empty value
-2024-10-02 20:01:07 - Not Found
-2024-10-02 20:01:12 - Success!
-2024-10-02 20:00:44 - CEP must have 8 digits
-2024-10-02 20:00:51 - CEP must be numeric
-2024-10-02 20:00:58 - CEP must have 8 digits
