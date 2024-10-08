@@ -30,6 +30,7 @@ import (
 
 	"fmt"
 	"os"
+	"time"
 )
 
 func main() {
@@ -66,4 +67,9 @@ func main() {
 
 	//	bufio.ScanLines(file)
 
+	t := time.Now()
+	fmt.Println(t.String())
+	fmt.Println(t.Format("2006-01-02 15:04:05"))
+	name := t.Format("2006-01-02 15:04:05") + ".txt"
+	fmt.Print(name)
 }
