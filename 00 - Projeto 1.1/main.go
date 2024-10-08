@@ -1,7 +1,3 @@
-//Exercício 1: Validação de CEP
-//Implemente uma validação para verificar se o CEP contém exatamente 8 dígitos.
-//Caso contrário, retorne um erro de requisição inválida (400 Bad Request).
-
 package main
 
 import (
@@ -69,7 +65,7 @@ func BuscaCepHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte("Not Found!\n"))
 		t := time.Now()
-		error_entry := t.Format("2006-01-02 15:04:05") + "-" + "Not Found"
+		error_entry := t.Format("2006-01-02 15:04:05") + " - Input data:" + r.URL.Path + " - " + "Not Found"
 		errors = append(errors, error_entry)
 		return
 	}
@@ -78,21 +74,21 @@ func BuscaCepHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("CEP cannot be an empty value"))
 		t := time.Now()
-		error_entry := t.Format("2006-01-02 15:04:05") + "-" + "CEP cannot be an empty value"
+		error_entry := t.Format("2006-01-02 15:04:05") + " - Input data:" + cepParam + " - " + "CEP cannot be an empty value"
 		errors = append(errors, error_entry)
 		return
 	} else if len(cepParam) != 8 {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("CEP must have 8 digits"))
 		t := time.Now()
-		error_entry := t.Format("2006-01-02 15:04:05") + "-" + "CEP must have 8 digits"
+		error_entry := t.Format("2006-01-02 15:04:05") + " - Input data:" + cepParam + " - " + "CEP must have 8 digits"
 		errors = append(errors, error_entry)
 		return
 	} else if isNumeric(cepParam) != true {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("CEP must be numeric"))
 		t := time.Now()
-		error_entry := t.Format("2006-01-02 15:04:05") + "-" + "CEP must be numeric"
+		error_entry := t.Format("2006-01-02 15:04:05") + " - Input data:" + cepParam + " - " + "CEP must be numeric"
 		errors = append(errors, error_entry)
 		return
 	}
@@ -124,7 +120,7 @@ func BuscaCepHandler(w http.ResponseWriter, r *http.Request) {
 		// Forma mais prática
 		json.NewEncoder(w).Encode(cep)
 		t := time.Now()
-		error_entry := t.Format("2006-01-02 15:04:05") + "-" + "Success!"
+		error_entry := t.Format("2006-01-02 15:04:05") + " - " + "Success!"
 		errors = append(errors, error_entry)
 	}
 
