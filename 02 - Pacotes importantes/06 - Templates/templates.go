@@ -12,10 +12,10 @@ type Curso struct {
 
 func main() {
 	curso := Curso{"Go", 50}
-
-	template := template.New("CursoTemplate")
-	template, _ = template.Parse("Curso: {{.Nome}} - Carga Horária: {{.CargaHoraria}}")
-	err := template.Execute(os.Stdout, curso)
+	t := template.Must(template.New("CursoTemplate").Parse("Curso: {{.Nome}} - Carga Horária: {{.CargaHoraria}}"))
+	// template := template.New("CursoTemplate")
+	// template, _ = template.Parse("Curso: {{.Nome}} - Carga Horária: {{.CargaHoraria}}")
+	err := t.Execute(os.Stdout, curso)
 	if err != nil {
 		panic(err)
 	}
