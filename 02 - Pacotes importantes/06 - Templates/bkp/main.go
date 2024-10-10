@@ -1,27 +1,27 @@
-package main
+// package main
 
-import (
-	"os"
-	"text/template"
-)
+// import (
+// 	"os"
+// 	"text/template"
+// )
 
-type Curso struct {
-	Nome         string
-	CargaHoraria int
-}
+// type Curso struct {
+// 	Nome         string
+// 	CargaHoraria int
+// }
 
-type Cursos []Curso
+// type Cursos []Curso
 
-func main() {
-	t := template.Must(template.New("template.html").ParseFiles("template.html"))
+// func main() {
+// 	t := template.Must(template.New("template.html").ParseFiles("template.html"))
 
-	err := t.Execute(os.Stdout, Cursos{
-		{"Go", 40},
-		{"Java", 40},
-		{"Agile", 30},
-	})
-	if err != nil {
-		panic(err)
-	}
+// 	err := t.Execute(os.Stdout, Cursos{
+// 		{"Go", 40},
+// 		{"Java", 40},
+// 		{"Agile", 30},
+// 	})
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-}
+// }
