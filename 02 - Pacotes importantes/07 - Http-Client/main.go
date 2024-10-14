@@ -13,7 +13,7 @@ import (
 
 func main() {
 	//c := http.Client{Timeout: time.Microsecond}
-	c:= http.Client{}
+	c := http.Client{}
 	resp, err := c.Post("http://google.com")
 	if err != nil {
 		panic(err)
