@@ -42,8 +42,8 @@ func updateProduct(db *sql.DB, product *Product) error {
 	if err != nil {
 		return err
 	}
-	defer db.Close()
-	_, err = stmt.Exec(product.ID, product.Name, product.Price)
+	defer stmt.Close()
+	_, err = stmt.Exec(product.Name, product.Price, product.ID)
 	if err != nil {
 		return err
 	}
@@ -58,6 +58,12 @@ func main() {
 	defer db.Close()
 	prod := NewProduct("PineApple Phone", 3500.0)
 	err = insertProduct(db, prod)
+	if err != nil {
+		panic(err)
+	}
+
+	prod.Name = "PineApple Phone 5"
+	err = updateProduct(db, prod)
 	if err != nil {
 		panic(err)
 	}
