@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
@@ -65,11 +66,18 @@ func selectProduct(db *sql.DB, id string) (*Product, error) {
 	return &p, nil
 }
 
-func selectAllProducts(db *sql.DB) ([]Product, error) {
+// 2 - Paginação de resultados:
+// Modifique a função selectAllProducts para retornar um número
+// limitado de produtos por vez (ex.: 10 produtos), implementando paginação.
+func selectAllProducts(db *sql.DB, limit int) ([]Product, error) {
 	// como não serão passados parâmetros
 	// não corremos o risco de um sql injection
 	// assim, não é necessário o uso do prepare
-	rows, err := db.Query("select id, name, price from products")
+	query := "select id, name, price from products"
+	if limit > 0 {
+		query = "select id, name, price from products limit " + strconv.Itoa(limit)
+	}
+	rows, err := db.Query(query)
 	if err != nil {
 		return nil, err
 	}
@@ -86,53 +94,25 @@ func selectAllProducts(db *sql.DB) ([]Product, error) {
 	return products, nil
 }
 
-func deleteProduct(db *sql.DB, id string) error {
-	stmt, err := db.Prepare("delete from products where id=?")
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
-	_, err = stmt.Exec(id)
-	if err != nil {
-		return err
+// 1 - Inserir múltiplos produtos de uma vez:
+// Crie uma função que receba um slice de Product e
+// insira todos os produtos de uma só vez no banco
+// de dados usando uma transação.
+func IsertMany(db *sql.DB, products []*Product) error {
+	for _, prd := range products {
+		err := insertProduct(db, prd)
+		if err != nil {
+			return nil
+		}
 	}
 	return nil
 }
 
-// desafio! remover registro
-// func deleteProduct(db *sql.DB, id string) (bool, error) {
-// 	stmt, err := db.Prepare("delete from products where id=?")
-// 	if err != nil {
-// 		return false, err
-// 	}
-// 	defer stmt.Close()
-// 	var p Product
-// 	err = stmt.QueryRow(id).Scan(&p.ID, &p.Name, &p.Price)
-// 	if err != nil {
-// 		return false, err
-// 	}
-// 	return true, nil
-// }
+// 3 - Filtragem de produtos:
+// Adicione um filtro por preço e nome. 
+// Crie uma função que selecione produtos 
+// com base em um intervalo de preços e/ou uma parte do nome.
 
-// desafio! Trazer mais de um registro do banco
-// func selectProducts(db *sql.DB) ([]*Product, error) {
-// 	stmt, err := db.Prepare("select id, name, price from products")
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	defer stmt.Close()
-// 	var p Product
-// 	var lista = make([]*Product, 0)
-
-// 	for err != nil {
-// 		err = stmt.QueryRow(stmt).Scan(&p.ID, &p.Name, &p.Price)
-// 		if err != nil {
-// 			return nil, err
-// 		}
-// 		lista = append(lista, &p)
-// 	}
-// 	return lista, err
-// }
 
 func main() {
 	db, err := sql.Open("mysql", "root:root@tcp(localhost:3306)/goexpert")
@@ -140,42 +120,29 @@ func main() {
 		panic(err)
 	}
 	defer db.Close()
-	// prod := NewProduct("PineApple Phone", 3500.0)
-	// err = insertProduct(db, prod)
-	// if err != nil {
-	// 	panic(err)
-	// }
 
-	// prod.Name = "PineApple Phone 5"
-	// err = updateProduct(db, prod)
-	// if err != nil {
-	// 	panic(err)
-	// }
+	var products []Product
 
-	// p, err := selectProduct(db, prod.ID)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// fmt.Printf(p.Name)
-
-	products, err := selectAllProducts(db)
+	products, err = selectAllProducts(db, 0)
 	if err != nil {
 		panic(err)
 	}
-	for _, p := range products {
-		fmt.Printf("Produto %s está no valor de %2.f\n", p.Name, p.Price)
+
+	for _, prd := range products {
+		fmt.Println(prd)
 	}
 
-	id_user := "f8ffeaa6-62e6-489a-9127-b1a75adb90fd"
+	// prd1 := NewProduct("Notebook Asser Turbo 5", 3890.00)
+	// prd2 := NewProduct("Notebook Asser Turbo 7", 5400.00)
+	// prd3 := NewProduct("Tablet Orange Pad", 9000.00)
 
-	_ = deleteProduct(db, id_user)
+	// products = append(products, prd1, prd2, prd3)
 
-	products_dois, err := selectAllProducts(db)
-	if err != nil {
-		panic(err)
-	}
-	for _, p := range products_dois {
-		fmt.Printf("Produto %s está no valor de %2.f\n", p.Name, p.Price)
-	}
+	// for _, valor := range products {
+	// 	err := insertProduct(db, valor)
+	// 	if err != nil {
+	// 		panic(err)
+	// 	}
+	// }
+
 }
