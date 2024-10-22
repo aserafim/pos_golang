@@ -109,10 +109,28 @@ func IsertMany(db *sql.DB, products []*Product) error {
 }
 
 // 3 - Filtragem de produtos:
-// Adicione um filtro por preço e nome. 
-// Crie uma função que selecione produtos 
+// Adicione um filtro por preço e nome.
+// Crie uma função que selecione produtos
 // com base em um intervalo de preços e/ou uma parte do nome.
+func selectByPrice(db *sql.DB, minPrice float64, maxPrice float64) ([]Product, error) {
+	query := "select id, name, price from products where price >= " + strconv.FormatFloat(minPrice, 'f', -1, 64) + " and price <= " + strconv.FormatFloat(maxPrice, 'f', -1, 64)
 
+	rows, err := db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var products []Product
+	for rows.Next() {
+		var p Product
+		err = rows.Scan(&p.ID, &p.Name, &p.Price)
+		if err != nil {
+			return nil, err
+		}
+		products = append(products, p)
+	}
+	return products, nil
+}
 
 func main() {
 	db, err := sql.Open("mysql", "root:root@tcp(localhost:3306)/goexpert")
@@ -123,7 +141,7 @@ func main() {
 
 	var products []Product
 
-	products, err = selectAllProducts(db, 0)
+	products, err = selectByPrice(db, 5000, 10000)
 	if err != nil {
 		panic(err)
 	}
