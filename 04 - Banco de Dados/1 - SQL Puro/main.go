@@ -2,12 +2,33 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	"os"
 	"strconv"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 )
+
+var errors = make([]string, 5)
+
+func CreateLogFile() {
+	t := time.Now()
+	file_name := t.Format("2006-01-02 15:04:05") + ".txt"
+
+	log_file, err := os.Create(file_name)
+	if err != nil {
+		panic(err)
+	}
+
+	for i := len(errors) - 1; i >= 0; i-- {
+		_, err := log_file.Write([]byte(errors[i] + "\n"))
+		if err != nil {
+			panic(err)
+		}
+	}
+
+}
 
 type Product struct {
 	ID    string
@@ -51,6 +72,66 @@ func updateProduct(db *sql.DB, product *Product) error {
 	}
 	return nil
 }
+
+// 4 - Atualização em massa:
+// Crie uma função que permita atualizar o preço de todos
+// os produtos que estejam dentro de um determinado intervalo
+// de preço (ex.: aumentar o preço de todos os produtos que
+// custam entre R$ 100 e R$ 500 em 10%).
+func updateWithFilter(db *sql.DB, minPrice float64, maxPrice float64, pctDesc float64) error {
+	stmt, err := db.Prepare("update products set name = ?, price = ? where price >= ? and price <= ?")
+
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	var products []Product
+	products, err = selectByPrice(db, minPrice, maxPrice)
+	if err != nil {
+		return err
+	}
+
+	for _, product := range products {
+		newPrice := product.Price * (1 - pctDesc/100)
+		_, err = stmt.Exec(product.Name, newPrice, minPrice, maxPrice)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func updateWithFilterDois(db *sql.DB, minPrice float64, maxPrice float64, pctDesc float64) error {
+	// Preparando o statement com placeholders
+	stmt, err := db.Prepare("update products set name = ?, price = ? where price >= ? and price <= ?")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	// Selecionando os produtos dentro do intervalo de preços
+	products, err := selectByPrice(db, minPrice, maxPrice)
+	if err != nil {
+		return err
+	}
+
+	// Atualizando cada produto com o preço ajustado
+	for _, product := range products {
+		// Aplicando o desconto no preço
+		novoPreco := product.Price * (1 - pctDesc/100)
+
+		// Executando o statement com o nome e o preço atualizado
+		_, err = stmt.Exec(product.Name, novoPreco, minPrice, maxPrice)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 
 func selectProduct(db *sql.DB, id string) (*Product, error) {
 	stmt, err := db.Prepare("select id, name, price from products where id=?")
@@ -139,25 +220,24 @@ func main() {
 	}
 	defer db.Close()
 
-	var products []Product
+	//var products []Product
+	//products, err = selectByPrice(db, 5000, 10000)
 
-	products, err = selectByPrice(db, 5000, 10000)
+	err = updateWithFilterDois(db, 2000, 9000, 0.95)
 	if err != nil {
 		panic(err)
 	}
 
-	for _, prd := range products {
-		fmt.Println(prd)
-	}
+	// for _, prd := range products {
+	// 	fmt.Println(prd)
+	// }
 
 	// prd1 := NewProduct("Notebook Asser Turbo 5", 3890.00)
 	// prd2 := NewProduct("Notebook Asser Turbo 7", 5400.00)
 	// prd3 := NewProduct("Tablet Orange Pad", 9000.00)
-
-	// products = append(products, prd1, prd2, prd3)
-
+	// products = append(products, *prd1, *prd2, *prd3)
 	// for _, valor := range products {
-	// 	err := insertProduct(db, valor)
+	// 	err := insertProduct(db, &valor)
 	// 	if err != nil {
 	// 		panic(err)
 	// 	}
