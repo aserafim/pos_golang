@@ -2,7 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"os"
+	"errors"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -10,24 +11,24 @@ import (
 	"github.com/google/uuid"
 )
 
-var errors = make([]string, 5)
+type Log struct {
+	IDLog     string
+	IDProduct string
+	Operation string
+	DateTime  string
+}
 
-func CreateLogFile() {
-	t := time.Now()
-	file_name := t.Format("2006-01-02 15:04:05") + ".txt"
-
-	log_file, err := os.Create(file_name)
-	if err != nil {
-		panic(err)
+func NewLog(_IDProduct string, _Operation string) *Log {
+	return &Log{
+		IDLog:     uuid.New().String(),
+		IDProduct: _IDProduct,
+		Operation: _Operation,
+		DateTime:  time.Nanosecond.String(),
 	}
+}
 
-	for i := len(errors) - 1; i >= 0; i-- {
-		_, err := log_file.Write([]byte(errors[i] + "\n"))
-		if err != nil {
-			panic(err)
-		}
-	}
-
+func writeLog(db *sql.DB, log Log) {
+	stmt, err := db.Prepare("insert into logs(id, )")
 }
 
 type Product struct {
@@ -53,6 +54,16 @@ func insertProduct(db *sql.DB, product *Product) error {
 	defer stmt.Close()
 	// O _ abaixo, se utilizado como res, por exemplo
 	// pode trazer algumas infos sobre a execução
+	if product.ID == "" {
+		return errors.New("id cannot be empty")
+	}
+	if product.Name == "" {
+		return errors.New("name cannot be empty")
+	}
+
+	if product.Price < 0 {
+		return errors.New("price cannot be less than zero")
+	}
 	_, err = stmt.Exec(product.ID, product.Name, product.Price)
 	if err != nil {
 		return err
@@ -66,6 +77,16 @@ func updateProduct(db *sql.DB, product *Product) error {
 		return err
 	}
 	defer stmt.Close()
+	if product.ID == "" {
+		return errors.New("id cannot be empty")
+	}
+	if product.Name == "" {
+		return errors.New("name cannot be empty")
+	}
+
+	if product.Price < 0 {
+		return errors.New("price cannot be less than zero")
+	}
 	_, err = stmt.Exec(product.Name, product.Price, product.ID)
 	if err != nil {
 		return err
@@ -94,6 +115,16 @@ func updateWithFilter(db *sql.DB, minPrice float64, maxPrice float64, pctDesc fl
 
 	for _, product := range products {
 		newPrice := product.Price * (1 - pctDesc/100)
+		if product.ID == "" {
+			return errors.New("id cannot be empty")
+		}
+		if product.Name == "" {
+			return errors.New("name cannot be empty")
+		}
+
+		if product.Price < 0 {
+			return errors.New("price cannot be less than zero")
+		}
 		_, err = stmt.Exec(newPrice, product.ID)
 		if err != nil {
 			return err
@@ -119,7 +150,17 @@ func deleteWithFilter(db *sql.DB, maxPrice float64) error {
 		return err
 	}
 	for _, product := range products {
-		stmt.Exec(product.ID)
+		if product.ID == "" {
+			return errors.New("id cannot be empty")
+		}
+		if product.Name == "" {
+			return errors.New("name cannot be empty")
+		}
+
+		if product.Price < 0 {
+			return errors.New("price cannot be less than zero")
+		}
+		_, err = stmt.Exec(product.ID)
 		if err != nil {
 			return err
 		}
@@ -134,6 +175,18 @@ func selectProduct(db *sql.DB, id string) (*Product, error) {
 	}
 	defer stmt.Close()
 	var p Product
+
+	if p.ID == "" {
+		return nil, errors.New("id cannot be empty")
+	}
+	if p.Name == "" {
+		return nil, errors.New("name cannot be empty")
+	}
+
+	if p.Price < 0 {
+		return nil, errors.New("price cannot be less than zero")
+	}
+
 	err = stmt.QueryRow(id).Scan(&p.ID, &p.Name, &p.Price)
 	if err != nil {
 		return nil, err
@@ -160,6 +213,16 @@ func selectAllProducts(db *sql.DB, limit int) ([]Product, error) {
 	var products []Product
 	for rows.Next() {
 		var p Product
+		if p.ID == "" {
+			return nil, errors.New("id cannot be empty")
+		}
+		if p.Name == "" {
+			return nil, errors.New("name cannot be empty")
+		}
+
+		if p.Price < 0 {
+			return nil, errors.New("price cannot be less than zero")
+		}
 		err = rows.Scan(&p.ID, &p.Name, &p.Price)
 		if err != nil {
 			return nil, err
@@ -198,6 +261,16 @@ func selectByPrice(db *sql.DB, minPrice float64, maxPrice float64) ([]Product, e
 	var products []Product
 	for rows.Next() {
 		var p Product
+		if p.ID == "" {
+			return nil, errors.New("id cannot be empty")
+		}
+		if p.Name == "" {
+			return nil, errors.New("name cannot be empty")
+		}
+
+		if p.Price < 0 {
+			return nil, errors.New("price cannot be less than zero")
+		}
 		err = rows.Scan(&p.ID, &p.Name, &p.Price)
 		if err != nil {
 			return nil, err
@@ -214,6 +287,11 @@ func main() {
 	}
 	defer db.Close()
 
+	var prod1 Product
+	prod1.Name = "Teste"
+	prod1.Price = 0
+
+	fmt.Println(insertProduct(db, &prod1))
 	//var products []Product
 	//products, err = selectByPrice(db, 5000, 10000)
 
