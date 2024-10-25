@@ -103,34 +103,29 @@ func updateWithFilter(db *sql.DB, minPrice float64, maxPrice float64, pctDesc fl
 	return nil
 }
 
-// func updateWithFilterDois(db *sql.DB, minPrice float64, maxPrice float64, pctDesc float64) error {
-// 	// Preparando o statement com placeholders
-// 	stmt, err := db.Prepare("update products set name = ?, price = ? where price >= ? and price <= ?")
-// 	if err != nil {
-// 		return err
-// 	}
-// 	defer stmt.Close()
+// 5 - Exclusão em lote:
 
-// 	// Selecionando os produtos dentro do intervalo de preços
-// 	products, err := selectByPrice(db, minPrice, maxPrice)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	// Atualizando cada produto com o preço ajustado
-// 	for _, product := range products {
-// 		// Aplicando o desconto no preço
-// 		novoPreco := product.Price * (1 - pctDesc/100)
-
-// 		// Executando o statement com o nome e o preço atualizado
-// 		_, err = stmt.Exec(product.Name, novoPreco, minPrice, maxPrice)
-// 		if err != nil {
-// 			return err
-// 		}
-// 	}
-
-// 	return nil
-// }
+// Implemente uma função que exclua todos os produtos
+// cujo preço esteja acima de um valor especificado.
+func deleteWithFilter(db *sql.DB, maxPrice float64) error {
+	stmt, err := db.Prepare("delete from products where id = ?")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	var products []Product
+	products, err = selectByPrice(db, maxPrice, 5000000)
+	if err != nil {
+		return err
+	}
+	for _, product := range products {
+		stmt.Exec(product.ID)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
 func selectProduct(db *sql.DB, id string) (*Product, error) {
 	stmt, err := db.Prepare("select id, name, price from products where id=?")
@@ -222,10 +217,10 @@ func main() {
 	//var products []Product
 	//products, err = selectByPrice(db, 5000, 10000)
 
-	err = updateWithFilter(db, 5000, 9000, 0.95)
-	if err != nil {
-		panic(err)
-	}
+	// err = updateWithFilter(db, 5000, 9000, 0.95)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	// for _, prd := range products {
 	// 	fmt.Println(prd)
@@ -241,5 +236,7 @@ func main() {
 	// 		panic(err)
 	// 	}
 	// }
+
+	deleteWithFilter(db, 9000)
 
 }
