@@ -79,7 +79,7 @@ func updateProduct(db *sql.DB, product *Product) error {
 // de preço (ex.: aumentar o preço de todos os produtos que
 // custam entre R$ 100 e R$ 500 em 10%).
 func updateWithFilter(db *sql.DB, minPrice float64, maxPrice float64, pctDesc float64) error {
-	stmt, err := db.Prepare("update products set name = ?, price = ? where price >= ? and price <= ?")
+	stmt, err := db.Prepare("update products set price = ? where id = ?")
 
 	if err != nil {
 		return err
@@ -94,7 +94,7 @@ func updateWithFilter(db *sql.DB, minPrice float64, maxPrice float64, pctDesc fl
 
 	for _, product := range products {
 		newPrice := product.Price * (1 - pctDesc/100)
-		_, err = stmt.Exec(product.Name, newPrice, minPrice, maxPrice)
+		_, err = stmt.Exec(newPrice, product.ID)
 		if err != nil {
 			return err
 		}
@@ -103,35 +103,34 @@ func updateWithFilter(db *sql.DB, minPrice float64, maxPrice float64, pctDesc fl
 	return nil
 }
 
-func updateWithFilterDois(db *sql.DB, minPrice float64, maxPrice float64, pctDesc float64) error {
-	// Preparando o statement com placeholders
-	stmt, err := db.Prepare("update products set name = ?, price = ? where price >= ? and price <= ?")
-	if err != nil {
-		return err
-	}
-	defer stmt.Close()
+// func updateWithFilterDois(db *sql.DB, minPrice float64, maxPrice float64, pctDesc float64) error {
+// 	// Preparando o statement com placeholders
+// 	stmt, err := db.Prepare("update products set name = ?, price = ? where price >= ? and price <= ?")
+// 	if err != nil {
+// 		return err
+// 	}
+// 	defer stmt.Close()
 
-	// Selecionando os produtos dentro do intervalo de preços
-	products, err := selectByPrice(db, minPrice, maxPrice)
-	if err != nil {
-		return err
-	}
+// 	// Selecionando os produtos dentro do intervalo de preços
+// 	products, err := selectByPrice(db, minPrice, maxPrice)
+// 	if err != nil {
+// 		return err
+// 	}
 
-	// Atualizando cada produto com o preço ajustado
-	for _, product := range products {
-		// Aplicando o desconto no preço
-		novoPreco := product.Price * (1 - pctDesc/100)
+// 	// Atualizando cada produto com o preço ajustado
+// 	for _, product := range products {
+// 		// Aplicando o desconto no preço
+// 		novoPreco := product.Price * (1 - pctDesc/100)
 
-		// Executando o statement com o nome e o preço atualizado
-		_, err = stmt.Exec(product.Name, novoPreco, minPrice, maxPrice)
-		if err != nil {
-			return err
-		}
-	}
+// 		// Executando o statement com o nome e o preço atualizado
+// 		_, err = stmt.Exec(product.Name, novoPreco, minPrice, maxPrice)
+// 		if err != nil {
+// 			return err
+// 		}
+// 	}
 
-	return nil
-}
-
+// 	return nil
+// }
 
 func selectProduct(db *sql.DB, id string) (*Product, error) {
 	stmt, err := db.Prepare("select id, name, price from products where id=?")
@@ -223,7 +222,7 @@ func main() {
 	//var products []Product
 	//products, err = selectByPrice(db, 5000, 10000)
 
-	err = updateWithFilterDois(db, 2000, 9000, 0.95)
+	err = updateWithFilter(db, 5000, 9000, 0.95)
 	if err != nil {
 		panic(err)
 	}
