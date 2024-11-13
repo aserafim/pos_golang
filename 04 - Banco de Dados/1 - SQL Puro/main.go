@@ -1,5 +1,14 @@
 package main
 
+/*
+Logs de operações:
+
+// Modifique suas funções para que, a cada operação de inserção,
+// atualização ou exclusão de produto, seja criado um registro em uma
+// tabela de logs. Esse registro pode conter o ID do produto,
+// a operação realizada e a data/hora.
+*/
+
 import (
 	"database/sql"
 	"errors"
@@ -281,17 +290,19 @@ func selectByPrice(db *sql.DB, minPrice float64, maxPrice float64) ([]Product, e
 }
 
 func main() {
-	db, err := sql.Open("mysql", "root:root@tcp(localhost:3306)/goexpert")
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
+	// db, err := sql.Open("mysql", "root:root@tcp(localhost:3306)/goexpert")
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// defer db.Close()
 
-	var prod1 Product
-	prod1.Name = "Teste"
-	prod1.Price = 0
+	// var prod1 Product
+	// prod1.Name = "Teste"
+	// prod1.Price = 0
 
-	fmt.Println(insertProduct(db, &prod1))
+	// fmt.Println(insertProduct(db, &prod1))
+
+	//db2, err := sql.Open("sqlite", "")
 	//var products []Product
 	//products, err = selectByPrice(db, 5000, 10000)
 
@@ -315,6 +326,12 @@ func main() {
 	// 	}
 	// }
 
-	deleteWithFilter(db, 9000)
+	// deleteWithFilter(db, 9000)
+
+	db, err := sql.Open("sqlite", "root:root@tcp(localhost:3306)/goexpert")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
 
 }
