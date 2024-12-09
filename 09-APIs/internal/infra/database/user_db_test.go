@@ -40,4 +40,24 @@ func TestFindByEmail(t *testing.T) {
 	}
 	// migrate realiza a criação da tabela
 	db.AutoMigrate(&entity.User{})
+
+	// cria uma instância de objeto
+	user, _ := entity.NewUser("John", "j@j.com", "123456")
+
+	// cria um userDB com
+	// a conexão do banco como
+	// parametro
+	userDB := NewUser(db)
+
+	// cria o usuario no banco
+	// usando a função do userDB
+	err = userDB.Create(user)
+	assert.Nil(t, err)
+
+	userFound, err := userDB.FindByEmail(user.Email)
+	assert.Nil(t, err)
+	assert.Equal(t, user.ID, userFound.ID)
+	assert.Equal(t, user.Name, userFound.Name)
+	assert.Equal(t, user.Email, userFound.Email)
+	assert.NotNil(t, userFound.Password)
 }
