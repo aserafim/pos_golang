@@ -30,3 +30,14 @@ func TestCreateUser(t *testing.T) {
 	assert.Equal(t, user.Email, userFound.Email)
 	assert.NotNil(t, userFound.Password)
 }
+
+func TestFindByEmail(t *testing.T) {
+	// abre a sessão com o banco
+	// criando a tabela inicial
+	db, err := gorm.Open(sqlite.Open("file::memory"), &gorm.Config{})
+	if err != nil {
+		t.Error(err)
+	}
+	// migrate realiza a criação da tabela
+	db.AutoMigrate(&entity.User{})
+}
