@@ -26,7 +26,7 @@ func TestCreateUser(t *testing.T) {
 	err = db.First(&userFound, "id = ?", user.ID).Error
 	assert.Nil(t, err)
 
-	t.Logf("Expected ID: %s, Found ID: %s", user.ID, userFound.ID)
+	//t.Logf("Expected ID: %s, Found ID: %s", user.ID, userFound.ID)
 
 	//assert.Equal(t, user.ID.String(), userFound.ID.String())
 	assert.Equal(t, user.Name, userFound.Name)
@@ -75,7 +75,7 @@ func TestFindByEmail(t *testing.T) {
 	user, _ := entity.NewUser("John", "j@j.com", "123456")
 	userDB := NewUser(db)
 
-	print("user ID: " , user.ID.String())
+//	print("user ID: " , user.ID.String())
 
 	err = userDB.Create(user)
 	assert.Nil(t, err)
