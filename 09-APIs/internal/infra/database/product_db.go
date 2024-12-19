@@ -20,6 +20,7 @@ func (p *Product) Create(product *entity.Product) error {
 func (p *Product) FindByID(id string) (*entity.Product, error) {
 	var product entity.Product
 	err := p.DB.First(&product, "id = ?", id).Error
+
 	return &product, err
 }
 
@@ -50,5 +51,9 @@ func (p *Product) Delete(id string) error {
 	if err != nil {
 		return err
 	}
-	return p.DB.Delete(product).Error
+	err = p.DB.Delete(product).Error
+	//	if err != gorm.ErrRecordNotFound {
+	//		return err
+	//	}
+	return err
 }
