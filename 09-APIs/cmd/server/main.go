@@ -27,5 +27,5 @@ func main() {
 	productHandler := handlers.NewProductHandler(productDB)
 
 	http.HandleFunc("/products", productHandler.CreateProduct)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":8000", nil)
 }
