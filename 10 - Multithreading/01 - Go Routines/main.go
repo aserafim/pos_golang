@@ -17,3 +17,7 @@ func main() {
 	go callApi("FBI")
 	time.Sleep(15 * time.Second)
 }
+
+// O que são waitgroups?
+
+// Como utiliamos eles?
