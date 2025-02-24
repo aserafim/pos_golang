@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -15,10 +15,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	m := sync.Mutex{}
-	m.Lock()
-	number = number + 1
-	m.Unlock()
+	//m := sync.Mutex{}
+	//m.Lock()
+	atomic.AddUint64(&number, 1)
+	//m.Unlock()
 	time.Sleep(600 * time.Microsecond)
 	w.Write([]byte(fmt.Sprintf("You are the visitant of number %d", number)))
 
