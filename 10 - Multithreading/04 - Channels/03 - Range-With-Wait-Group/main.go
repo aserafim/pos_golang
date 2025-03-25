@@ -11,7 +11,7 @@ func main() {
 	wait.Add(10)
 
 	go publish(channel)
-	reader(channel, &wait)
+	go reader(channel, &wait)
 
 	wait.Wait()
 
