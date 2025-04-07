@@ -9,15 +9,13 @@ import (
 )
 
 type Advice struct {
-	Slip struct {
-		ID     int    `json:"id"`
-		Advice string `json:"advice"`
-	} `json:"slip"`
+	Code  string `json:"code"`
+	Hello string `json:"hello"`
 }
 
 func main() {
 
-	req, err := http.Get("https://api.adviceslip.com/advice")
+	req, err := http.Get("https://hellosalut.stefanbohacek.dev/?ip=89.120.120.120")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Erro ao realizar a requisição: %v\n", err)
 	}
@@ -33,6 +31,6 @@ func main() {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Erro ao fazer parse da resposta: %v\n", err)
 	}
-	fmt.Println(advice.Slip.Advice)
+	fmt.Println(advice.Hello)
 
 }
