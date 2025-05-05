@@ -73,6 +73,53 @@ func (suite *EventDispatcherTestSuite) TestEventDispatcher_Register() {
 	assert.Equal(suite.T(), &suite.handler, suite.eventDispatcher.handlers[suite.event.getName()][0])
 
 	// Verificar se o handler 2 registrado é o meso que passamos
+	assert.Equal(suite.T(), &suite.handler2, suite.eventDispatcher.handlers[suite.event.getName()][1])
+
+}
+
+func (suite *EventDispatcherTestSuite) TestDuplicateEvent() {
+	err := suite.eventDispatcher.Register(suite.event.getName(), &suite.handler)
+	suite.Nil(err)
+	suite.Equal(1, len(suite.eventDispatcher.handlers))
+
+	err = suite.eventDispatcher.Register(suite.event.getName(), &suite.handler)
+	suite.Equal(ErrHandlerAlreadyRegistered, err)
+	suite.Equal(1, len(suite.eventDispatcher.handlers))
+
+}
+
+func (suite *EventDispatcherTestSuite) TestClearHandler() {
+	// Adiciona um evento e um handler
+	err := suite.eventDispatcher.Register(suite.event.getName(), &suite.handler)
+	suite.Nil(err)
+	suite.Equal(1, len(suite.eventDispatcher.handlers[suite.event.getName()]))
+
+	// Registra mais um handler ao evento
+	err = suite.eventDispatcher.Register(suite.event.getName(), &suite.handler2)
+	suite.Nil(err)
+	suite.Equal(2, len(suite.eventDispatcher.handlers[suite.event.getName()]))
+
+	// Limpa os handlers
+	suite.eventDispatcher.Clear()
+	suite.Equal(0, len(suite.eventDispatcher.handlers))
+
+}
+
+func (suite *EventDispatcherTestSuite) TestHas() {
+	// Adiciona um evento a um handler
+	err := suite.eventDispatcher.Register(suite.event.getName(), &suite.handler)
+	suite.Nil(err)
+	suite.Equal(1, len(suite.eventDispatcher.handlers[suite.event.getName()]))
+
+	// Adiciona mais um evento e handler
+	err = suite.eventDispatcher.Register(suite.event.getName(), &suite.handler2)
+	suite.Nil(err)
+	suite.Equal(2, len(suite.eventDispatcher.handlers[suite.event.getName()]))
+
+	// Verifca se existe um handler associado aos eventos
+	assert.True(suite.T(), suite.eventDispatcher.Has(suite.event.getName(), &suite.handler))
+	assert.True(suite.T(), suite.eventDispatcher.Has(suite.event.getName(), &suite.handler2))
+	assert.False(suite.T(), suite.eventDispatcher.Has(suite.event.getName(), &suite.handler3))
 
 }
 
