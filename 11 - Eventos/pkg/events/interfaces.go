@@ -1,6 +1,7 @@
 package events
 
 import (
+	"sync"
 	"time"
 )
 
@@ -11,7 +12,7 @@ type EventInterface interface {
 }
 
 type EventHandlerInterface interface {
-	Handle(ev EventInterface)
+	Handle(ev EventInterface, wg *sync.WaitGroup)
 }
 
 type EventDispatcherInterface interface {
