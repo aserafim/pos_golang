@@ -29,6 +29,6 @@ func NewUser(name string, email string, password string) (*User, error) {
 // Metodo para validar se a senha do usuario confere com
 // o hash armazenado. Util para autenticacao
 func (u *User) ValidatePassword(password string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(password), []byte(u.Password))
+	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
 	return err == nil
 }
