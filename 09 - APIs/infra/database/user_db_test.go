@@ -10,11 +10,12 @@ import (
 )
 
 func TestCreateUser(t *testing.T) {
-	db, err := gorm.Open(sqlite.Open("file::memory"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
 	if err != nil {
-		t.Error(err)
+		t.Fatalf("failed to connect database: %v", err)
 	}
-	db.AutoMigrate(&User{})
+
+	db.AutoMigrate(&entity.User{})
 	user, _ := entity.NewUser("Alefe", "a@a.com", "12345")
 	userDb := NewUser(db)
 	err = userDb.Create(user)
@@ -31,11 +32,12 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestFindByEmail(t *testing.T) {
-	db, err := gorm.Open(sqlite.Open("file::memory"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
 	if err != nil {
-		t.Error(err)
+		t.Fatalf("failed to connect database: %v", err)
 	}
-	db.AutoMigrate(&User{})
+
+	db.AutoMigrate(&entity.User{})
 	user, _ := entity.NewUser("Alefe", "a@a.com", "12345")
 	userDb := NewUser(db)
 	err = userDb.Create(user)
