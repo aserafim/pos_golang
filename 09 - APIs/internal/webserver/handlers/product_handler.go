@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/aserafim/pos_golang/09_APIs/internal/database"
 	"github.com/aserafim/pos_golang/09_APIs/internal/dto"
@@ -44,8 +45,8 @@ func (h *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-// Handler para GetById
-func (h *ProductHandler) GetProductById(w http.ResponseWriter, r *http.Request) {
+// Handler para GetProduct
+func (h *ProductHandler) GetProduct(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	if id == "" {
 		w.WriteHeader(http.StatusBadRequest)
@@ -59,6 +60,34 @@ func (h *ProductHandler) GetProductById(w http.ResponseWriter, r *http.Request) 
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(product)
+}
+
+// Handler para GetProducts
+func (h *ProductHandler) GetProducts(w http.ResponseWriter, r *http.Request) {
+	page := r.URL.Query().Get("page")
+	limit := r.URL.Query().Get("limit")
+
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		pageInt = 0
+	}
+
+	limitInt, err := strconv.Atoi(limit)
+	if err != nil {
+		limitInt = 0
+	}
+
+	sort := r.URL.Query().Get("sort")
+
+	products, err := h.ProductDB.FindAll(pageInt, limitInt, sort)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(products)
+
 }
 
 // Handler para Update
@@ -94,8 +123,7 @@ func (h *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 }
 
 // Handler para delete
-// Handler para GetById
-func (h *ProductHandler) Delete(w http.ResponseWriter, r *http.Request) {
+func (h *ProductHandler) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	if id == "" {
 		w.WriteHeader(http.StatusBadRequest)
