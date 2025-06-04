@@ -14,7 +14,7 @@ var (
 )
 
 type Product struct {
-	ID        entity.ID `json:"ID"`
+	ID        entity.ID `json:"id"`
 	Name      string    `json:"name"`
 	Price     float32   `json:"price"`
 	CreatedAt time.Time `json:"created_at"`
