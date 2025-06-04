@@ -40,6 +40,7 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Post("/products", productHandler.CreateProduct)
 	r.Get("/products/{id}", productHandler.GetProductById)
+	r.Put("/products/{id}", productHandler.UpdateProduct)
 	http.ListenAndServe(":8080", r)
 
 }

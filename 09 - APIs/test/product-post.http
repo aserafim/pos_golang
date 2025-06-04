@@ -8,5 +8,16 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8080/products/d999a5af-0f7f-4330-84f4-c05e149fc4f9 HTTP/1.1
+GET http://localhost:8080/products/4d0036b9-3571-4ea9-bb59-a0dc95d23221 HTTP/1.1
 Content-Type: application/json
+
+###
+
+PUT http://localhost:8080/products/4d0036b9-3571-4ea9-bb59-a0dc95d23221 HTTP/1.1
+Content-Type: application/json
+
+{
+    "id": "4d0036b9-3571-4ea9-bb59-a0dc95d23221",
+    "name": "Product 1 - Updated",
+    "price": 5.70
+}

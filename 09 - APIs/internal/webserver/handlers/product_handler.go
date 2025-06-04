@@ -7,6 +7,7 @@ import (
 	"github.com/aserafim/pos_golang/09_APIs/internal/database"
 	"github.com/aserafim/pos_golang/09_APIs/internal/dto"
 	"github.com/aserafim/pos_golang/09_APIs/internal/entity"
+	entityPkg "github.com/aserafim/pos_golang/09_APIs/pkg/entity"
 	"github.com/go-chi/chi"
 )
 
@@ -22,7 +23,7 @@ func NewProductHandler(db database.ProductInterface) *ProductHandler {
 	}
 }
 
-// Cria uma Handle Func para criar um novo Produto
+// Handler para create product
 func (h *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	var productInput dto.CreateProductInput
 	err := json.NewDecoder(r.Body).Decode(&productInput)
@@ -43,7 +44,7 @@ func (h *ProductHandler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-// Cria um Handler para GetById
+// Handler para GetById
 func (h *ProductHandler) GetProductById(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	if id == "" {
@@ -58,4 +59,36 @@ func (h *ProductHandler) GetProductById(w http.ResponseWriter, r *http.Request) 
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(product)
+}
+
+// Handler para Update
+func (h *ProductHandler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	if id == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	var product entity.Product
+	err := json.NewDecoder(r.Body).Decode(&product)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	product.ID, err = entityPkg.ParseID(id)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	_, err = h.ProductDB.FindByID(id)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+	}
+
+	err = h.ProductDB.Update(&product)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+
 }
