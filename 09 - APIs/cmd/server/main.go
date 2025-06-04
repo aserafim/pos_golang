@@ -7,6 +7,8 @@ import (
 	"github.com/aserafim/pos_golang/09_APIs/internal/database"
 	"github.com/aserafim/pos_golang/09_APIs/internal/entity"
 	"github.com/aserafim/pos_golang/09_APIs/internal/webserver/handlers"
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -33,8 +35,10 @@ func main() {
 	// Cria um productHandler
 	productHandler := handlers.NewProductHandler(productDB)
 
-	// Executa o servidor
-	http.HandleFunc("/products", productHandler.CreateProduct)
-	http.ListenAndServe(":8080", nil)
+	// Cria uma rota com o Chi
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Post("/products", productHandler.CreateProduct)
+	http.ListenAndServe(":8080", r)
 
 }
