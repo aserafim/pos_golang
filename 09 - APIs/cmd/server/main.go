@@ -31,9 +31,11 @@ func main() {
 
 	// Cria um product DB
 	productDB := database.NewProduct(db)
+	userDB := database.NewUser(db)
 
 	// Cria um productHandler
 	productHandler := handlers.NewProductHandler(productDB)
+	userHandler := handlers.NewUserHandler(userDB)
 
 	// Cria uma rota com o Chi
 	r := chi.NewRouter()
@@ -43,6 +45,7 @@ func main() {
 	r.Put("/products/{id}", productHandler.UpdateProduct)
 	r.Delete("/products/{id}", productHandler.DeleteProduct)
 	r.Get("/products", productHandler.GetProducts)
+	r.Post("/users", userHandler.CreateUser)
 	http.ListenAndServe(":8080", r)
 
 }
