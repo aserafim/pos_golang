@@ -1,2 +1,19 @@
-GET http://localhost:8080/products/d999a5af-0f7f-4330-84f4-c05e149fc4f9
+POST http://localhost:8080/users HTTP/1.1
 Content-Type: application/json
+
+{
+    "Name": "Alefe",
+    "Email": "a@a.com",
+    "Password": "aaaa"
+}
+
+
+###
+
+POST http://localhost:8080/users/get_token HTTP/1.1
+Content-Type: application/json
+
+{
+    "Email": "a@a.com",
+    "Password": "aaaa"
+}

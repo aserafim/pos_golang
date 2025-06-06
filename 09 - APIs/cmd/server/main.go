@@ -15,7 +15,7 @@ import (
 
 func main() {
 	//Carrega as configurações
-	_, err := configs.LoadConfig(".")
+	configs, err := configs.LoadConfig(".")
 	if err != nil {
 		panic(err)
 	}
@@ -35,7 +35,7 @@ func main() {
 
 	// Cria um productHandler
 	productHandler := handlers.NewProductHandler(productDB)
-	userHandler := handlers.NewUserHandler(userDB)
+	userHandler := handlers.NewUserHandler(userDB, configs.TokenAuth, configs.JwtExpiresIn)
 
 	// Cria uma rota com o Chi
 	r := chi.NewRouter()
@@ -46,6 +46,7 @@ func main() {
 	r.Delete("/products/{id}", productHandler.DeleteProduct)
 	r.Get("/products", productHandler.GetProducts)
 	r.Post("/users", userHandler.CreateUser)
+	r.Post("/users/get_token", userHandler.GetJwt)
 	http.ListenAndServe(":8080", r)
 
 }
