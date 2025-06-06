@@ -8,17 +8,20 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8080/products/4d0036b9-3571-4ea9-bb59-a0dc95d23221 HTTP/1.1
+GET http://localhost:8080/products/d999a5af-0f7f-4330-84f4-c05e149fc4f9 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDkyNDQ5MjAsInN1YiI6IjcyZWUzOGUwLTRiMGQtNGE4Ny05YWFmLWUxNDgzYTA3MzlmNiJ9.sFknKfPPmYnzAIlCkX2My7iprDxvPWSnZ5xVrQvoveE
 Content-Type: application/json
 
 ###
 
 GET http://localhost:8080/products?page=1&limit=3 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDkyNDQ5MjAsInN1YiI6IjcyZWUzOGUwLTRiMGQtNGE4Ny05YWFmLWUxNDgzYTA3MzlmNiJ9.sFknKfPPmYnzAIlCkX2My7iprDxvPWSnZ5xVrQvoveE
 Content-Type: application/json
 
 ###
 
-PUT http://localhost:8080/products/4d0036b9-3571-4ea9-bb59-a0dc95d23221 HTTP/1.1
+PUT http://localhost:8080/products/d999a5af-0f7f-4330-84f4-c05e149fc4f9 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDkyNDQ5MjAsInN1YiI6IjcyZWUzOGUwLTRiMGQtNGE4Ny05YWFmLWUxNDgzYTA3MzlmNiJ9.sFknKfPPmYnzAIlCkX2My7iprDxvPWSnZ5xVrQvoveE
 Content-Type: application/json
 
 {
