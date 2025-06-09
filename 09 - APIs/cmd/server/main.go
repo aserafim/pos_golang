@@ -14,6 +14,24 @@ import (
 	"gorm.io/gorm"
 )
 
+// @title           User and Products API
+// @version         1.0
+// @description     API developed as part of the Golang Developer course.
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   Alefe Serafim
+// @contact.url    https://www.linkedin.com/in/alefe-serafim/
+// @contact.email  correia.alefe@gmail.com
+
+// @license.name  MIT
+// @license.url   https://opensource.org/license/mit
+
+// @host      localhost:8000
+// @BasePath  /api/v1
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+
 func main() {
 	//Carrega as configurações
 	configs, err := configs.LoadConfig(".")

@@ -1,0 +1,28 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API developed as part of the Golang Developer course.",
+        "title": "User and Products API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Alefe Serafim",
+            "url": "https://www.linkedin.com/in/alefe-serafim/",
+            "email": "correia.alefe@gmail.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/license/mit"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8000",
+    "basePath": "/api/v1",
+    "paths": {},
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

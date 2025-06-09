@@ -1,0 +1,21 @@
+basePath: /api/v1
+host: localhost:8000
+info:
+  contact:
+    email: correia.alefe@gmail.com
+    name: Alefe Serafim
+    url: https://www.linkedin.com/in/alefe-serafim/
+  description: API developed as part of the Golang Developer course.
+  license:
+    name: MIT
+    url: https://opensource.org/license/mit
+  termsOfService: http://swagger.io/terms/
+  title: User and Products API
+  version: "1.0"
+paths: {}
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
