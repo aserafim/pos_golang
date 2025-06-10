@@ -28,20 +28,39 @@ func NewUserHandler(db database.UserInterface, jwt *jwtauth.JWTAuth, expiresIn i
 	}
 }
 
+// GetJWT 		godoc
+// @Summary		Get JWT token
+// @Description	Get a JWT token
+// @Tags		JWT
+// @Accept		json
+// @Produce		json
+// @Param		request		body		dto.GetJwt		true		"user credentials"
+// @Success		200		{object}	dto.GetJWTOutput
+// @Failure		400		{object}	Error
+// @Failure		401		{object}	Error
+// @Failure		404		{object}	Error
+// @Failure		500		{object}	Error
+// @Router		/users/get_token	[post]
 func (h *UserHandler) GetJwt(w http.ResponseWriter, r *http.Request) {
 	var getJwt dto.GetJwt
 	err := json.NewDecoder(r.Body).Decode(&getJwt)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		error := Error{Message: err.Error()}
+		json.NewEncoder(w).Encode(error)
 		return
 	}
 	userDB, err := h.UserDB.FindByEmail(getJwt.Email)
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
+		w.WriteHeader(http.StatusNotFound)
+		error := Error{Message: err.Error()}
+		json.NewEncoder(w).Encode(error)
 		return
 	}
 	if !userDB.ValidatePassword(getJwt.Password) {
 		w.WriteHeader(http.StatusUnauthorized)
+		error := Error{Message: "invalid password"}
+		json.NewEncoder(w).Encode(error)
 		return
 	}
 	// Cria um map de string para interface
@@ -55,11 +74,8 @@ func (h *UserHandler) GetJwt(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Cria uma struct que sera retornada
-	accessToken := struct {
-		AccessToken string `json:"access_token"`
-	}{
-		AccessToken: tokenString,
-	}
+	accessToken := dto.GetJWTOutput{AccessToken: tokenString}
+
 	print(accessToken.AccessToken)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -75,6 +91,7 @@ func (h *UserHandler) GetJwt(w http.ResponseWriter, r *http.Request) {
 // @Produce		json
 // @Param		request		body		dto.CreateUserInput		true		"user request"
 // @Success		201
+// @Failure		400		{object}	Error
 // @Failure		500		{object}	Error
 // @Router		/users	[post]
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
