@@ -4,12 +4,14 @@ import (
 	"net/http"
 
 	"github.com/aserafim/pos_golang/09_APIs/configs"
+	_ "github.com/aserafim/pos_golang/09_APIs/docs"
 	"github.com/aserafim/pos_golang/09_APIs/internal/database"
 	"github.com/aserafim/pos_golang/09_APIs/internal/entity"
 	"github.com/aserafim/pos_golang/09_APIs/internal/webserver/handlers"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/jwtauth"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -26,7 +28,7 @@ import (
 // @license.name  MIT
 // @license.url   https://opensource.org/license/mit
 
-// @host      localhost:8000
+// @host      localhost:8080
 // @BasePath  /api/v1
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
@@ -76,6 +78,7 @@ func main() {
 		r.Post("/get_token", userHandler.GetJwt)
 	})
 
+	r.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8080/docs/doc.json")))
 	http.ListenAndServe(":8080", r)
 
 }
