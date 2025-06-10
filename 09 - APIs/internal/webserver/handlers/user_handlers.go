@@ -31,7 +31,7 @@ func NewUserHandler(db database.UserInterface, jwt *jwtauth.JWTAuth, expiresIn i
 // GetJWT 		godoc
 // @Summary		Get JWT token
 // @Description	Get a JWT token
-// @Tags		JWT
+// @Tags		users
 // @Accept		json
 // @Produce		json
 // @Param		request		body		dto.GetJwt		true		"user credentials"

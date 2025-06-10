@@ -1,4 +1,5 @@
 POST http://localhost:8080/products HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NDk1NjkzMzMsInN1YiI6IjcyZWUzOGUwLTRiMGQtNGE4Ny05YWFmLWUxNDgzYTA3MzlmNiJ9.Qi8w2cUkmhp9SaaSmddTFJ9bc8JHMY9hB_lFaU6G5Bw
 Content-Type: application/json
 
 {
