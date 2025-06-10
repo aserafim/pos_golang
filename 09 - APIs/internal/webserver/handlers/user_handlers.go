@@ -11,6 +11,9 @@ import (
 	"github.com/go-chi/jwtauth"
 )
 
+type Error struct {
+	Message string `json:"message"`
+}
 type UserHandler struct {
 	UserDB       database.UserInterface
 	Jwt          *jwtauth.JWTAuth
@@ -64,6 +67,16 @@ func (h *UserHandler) GetJwt(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Create user godoc
+// @Summary		Create user
+// @Description	Create a new user
+// @Tags		users
+// @Accept		json
+// @Produce		json
+// @Param		request		body		dto.CreateUserInput		true		"user request"
+// @Success		201
+// @Failure		500		{object}	Error
+// @Router		/users	[post]
 func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	var userInput dto.CreateUserInput
@@ -76,12 +89,16 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	user, err := entity.NewUser(userInput.Name, userInput.Email, userInput.Password)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		error := Error{Message: err.Error()}
+		json.NewEncoder(w).Encode(error)
 		return
 	}
 
 	err = h.UserDB.Create(user)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
+		error := Error{Message: err.Error()}
+		json.NewEncoder(w).Encode(error)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)

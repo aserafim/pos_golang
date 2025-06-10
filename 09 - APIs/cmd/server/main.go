@@ -29,11 +29,10 @@ import (
 // @license.url   https://opensource.org/license/mit
 
 // @host      localhost:8080
-// @BasePath  /api/v1
+// @BasePath  /
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
-
 func main() {
 	//Carrega as configurações
 	configs, err := configs.LoadConfig(".")
